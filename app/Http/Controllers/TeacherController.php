@@ -26,7 +26,7 @@ class TeacherController extends Controller
             // Add other validation rules for additional fields if necessary
         ]);
 
-    $teacher = Teacher::create([
+        $teacher = Teacher::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -49,6 +49,29 @@ class TeacherController extends Controller
             ]);
         }
 
-        return $user->createToken('device-name')->plainTextToken;
+        $token = $user->createToken('device-name')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'school_name' => $user->school->name,
+            'name' => $user->name,
+            'role' => 'teacher',
+            'token' => $token,
+        ]);
+
     }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Teacher logged out successfully']);
+    }
+
+    public function getTeacher(Request $request){
+        return $request->user();
+    }
+
+    // public function getAllClasses(Request $requset){
+    //     return
+    // }
 }
