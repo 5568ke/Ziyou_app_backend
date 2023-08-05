@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Student;
+
 return [
 
     /*
@@ -40,6 +42,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+            'hash' => false,
+        ],
+        'sanctum_teacher' => [
+            'driver' => 'sanctum',
+            'provider' => 'teachers', // Assuming you have a 'teachers' provider defined
+        ],
+
     ],
 
     /*
@@ -65,6 +77,14 @@ return [
             'model' => App\Models\User::class,
         ],
 
+        'Student' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Student::class,
+        ],
+        'teachers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Teacher::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',
