@@ -42,14 +42,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'Student'=>[
-            'driver' => 'sanctum',
-            'provider' => 'Students',
+        'api' => [
+            'driver' => 'token',
+            'provider' => 'users',
+            'hash' => false,
         ],
-        'teacher'=>[
+        'sanctum_teacher' => [
             'driver' => 'sanctum',
-            'provider' => 'teachers',
+            'provider' => 'teachers', // Assuming you have a 'teachers' provider defined
         ],
+
     ],
 
     /*
