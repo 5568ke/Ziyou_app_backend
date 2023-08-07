@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Teacher;
 use Illuminate\Http\Request;
+use App\Models\Student;
+use App\Models\Classe;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-
-class TeacherController extends Controller
+class StudentController extends Controller
 {
+
     public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:teachers,email',
+            'email' => 'required|email|unique:students,email',
             'password' => [
                 'required',
                 'string',
@@ -23,17 +24,18 @@ class TeacherController extends Controller
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
             ],
             'School_id' => 'required|integer|exists:schools,id', // Assuming you have a 'schools' table with an 'id' column
-            // Add other validation rules for additional fields if necessary
+            'grade' => 'required|integer|between:1,6',
         ]);
 
-        $teacher = Teacher::create([
+        $student  = Student::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'School_id' => $request->School_id,
+            'grade' => $request->grade,
             // Add other fields if necessary
         ]);
-        return response()->json(['message' => 'Teacher registered successfully', 'teacher' => $teacher], 201);
+        return response()->json(['message' => 'Student registered successfully', 'student' => $student], 201);
     }
 
     public function login(Request $request){
@@ -42,10 +44,15 @@ class TeacherController extends Controller
             'password' => 'required',
         ]);
 
-        $user= Teacher::where('email',$request->email)->first();
+        $user= Student::where('email',$request->email)->first();
+        if(! Hash::check($request->password, $user->password)){
+            throw ValidationException::withMessages([
+                'msg' => ['the provided password are incorrect.'],
+            ]);
+        }
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['the provided credentials are incorrect.'],
             ]);
         }
 
@@ -55,7 +62,7 @@ class TeacherController extends Controller
             'status' => true,
             'school_name' => $user->school->name,
             'name' => $user->name,
-            'role' => 'teacher',
+            'role' => 'Student',
             'token' => $token,
         ]);
 
@@ -64,11 +71,28 @@ class TeacherController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Teacher logged out successfully']);
+        return response()->json(['message' => 'student logged out successfully']);
     }
 
-    public function getTeacher(Request $request){
-        return $request->user();
+    public function enterClass(Request $request)
+    {
+        $request->validate([
+            'invite_code' => 'required|string|exists:classes,invite_code',
+        ]);
+
+        $class = Classe::where('invite_code', $request->invite_code)->first();
+        if(!$class == null){
+            $request->user()->Classe_id = $class->id;
+             $request->user()->save();
+            return response()->json(['message' => 'student entered class successfully']);
+        }
+        else{
+            return response()->json(['message' => 'student entered class failed']);
+        }
     }
 
+    public function getStudent(Request $request)
+    {
+        return response()->json(['student' => $request->user()]);
+    }
 }

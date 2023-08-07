@@ -52,6 +52,10 @@ return [
             'provider' => 'teachers', // Assuming you have a 'teachers' provider defined
         ],
 
+        'sanctum_student' => [
+            'driver' => 'sanctum',
+            'provider' => 'students', // Assuming you have a 'teachers' provider defined
+        ],
     ],
 
     /*
@@ -77,7 +81,7 @@ return [
             'model' => App\Models\User::class,
         ],
 
-        'Student' => [
+        'students' => [
             'driver' => 'eloquent',
             'model' => App\Models\Student::class,
         ],
