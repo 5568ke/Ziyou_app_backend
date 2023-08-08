@@ -31,8 +31,8 @@ Route::post('/login/teacher', [TeacherController::class, 'login']);
 Route::post('/register/student', [StudentController::class, 'register']);
 Route::post('/login/student', [StudentController::class, 'login']);
 
-Route::group(['middleware'=>['auth:sanctum_teacher']],function(){
-
+// Route::group(['middleware'=>['auth:sanctum_teacher','refresh.token.expirtaion']],function(){
+Route::group(['middleware'=>['auth:sanctum_teacher', 'refresh.token.expiration']],function(){
     Route::post('/teacher/logout',[TeacherController::class,'logout']);
     Route::get('/user',[TeacherController::class,'getTeacher']);
 
@@ -46,7 +46,8 @@ Route::group(['middleware'=>['auth:sanctum_teacher']],function(){
     Route::delete('/teacher/deletePaper',[PaperController::class,'deletePaper']);
 });
 
-Route::group(['middleware'=>['auth:sanctum_student']],function(){
+// Route::group(['middleware'=>['auth:sanctum_student','refresh.token.expiration']],function(){
+Route::group(['middleware'=>['auth:sanctum_student', 'refresh.token.expiration']],function(){
     Route::get('student/getAllPaper_student',[PaperController::class,'getAllPaper_student']);
     Route::post('student/logout',[StudentController::class,'logout']);
     Route::post('student/enterclass',[StudentController::class,'enterclass']);
