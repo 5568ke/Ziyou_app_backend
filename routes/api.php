@@ -41,16 +41,23 @@ Route::group(['middleware'=>['auth:sanctum_teacher', 'refresh.token.expiration']
     Route::delete('/teacher/deleteClass',[ClasseController::class,'deleteClass']);
 
     Route::post('/teacher/createPaper',[PaperController::class,'createPaper']);
-    Route::post('/teacher/getAllPaper_teacher',[PaperController::class,'getAllPaper_teacher']);
+    Route::post('/teacher/getAllPaper',[PaperController::class,'getAllPaper_teacher']);
+    Route::post('/getPaper',[PaperController::class,'getPaper']);
     Route::post('/teacher/updatePaper',[PaperController::class,'updatePaper']);
     Route::delete('/teacher/deletePaper',[PaperController::class,'deletePaper']);
+    Route::post('/teacher/getAllPaperRecord',[PaperController::class,'getAllPaperRecord']);
+    Route::post('/teacher/markPaper',[PaperController::class,'makePaper']);
 });
 
 // Route::group(['middleware'=>['auth:sanctum_student','refresh.token.expiration']],function(){
 Route::group(['middleware'=>['auth:sanctum_student', 'refresh.token.expiration']],function(){
-    Route::get('student/getAllPaper_student',[PaperController::class,'getAllPaper_student']);
+    Route::get('student/getAllPaper',[PaperController::class,'getAllPaper_student']);                 //對應的 api : 取得作業
+    Route::post('student/getPaperRecord',[PaperController::class,'getPaperRecord_student']);          //對應的 api : 取得作業紀錄
+    Route::post('student/updatePaperRecord',[PaperController::class,'updatePaperRecord']);            //對應的 api : 更改作業紀錄
+    Route::post('/getPaper',[PaperController::class,'getPaper']);
     Route::post('student/logout',[StudentController::class,'logout']);
     Route::post('student/enterclass',[StudentController::class,'enterclass']);
+    Route::post('student/createProblemRecord',[PaperController::class,'createProblemRecord']);
 });
 
 

@@ -21,4 +21,8 @@ class Paper extends Model
     public function Class(): BelongsTo {
         return $this->belongsTo(Classe::class,'Class_id');
     }
+
+    public function problems(){
+        return $this->belongsToMany(Problem::class);
+    }
 }

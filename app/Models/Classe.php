@@ -21,4 +21,7 @@ class Classe extends Model
     public function Teacher(): BelongsTo {
         return $this->belongsTo(Teacher::class,'Teacher_id');
     }
+    public function Papers(){
+        return $this->hasMany(Paper::class,'Class_id');
+    }
 }
