@@ -18,6 +18,7 @@ class PaperController extends Controller
             'Class_id' => $request->class_id,
         ]);
         $problemsData = $request->problem;
+        $position=0;
         foreach ($problemsData as $problemData) {
             $problem = Problem::create([
                 'problemNum' => $problemData['problemNum'],
@@ -25,8 +26,10 @@ class PaperController extends Controller
                 'ansLink' => $problemData['ansLink'],
                 'answer' => $problemData['answer'],
                 'choices' => $problemData['choices'],
+                'position' => $position,
             ]);
             $paper->problems()->attach($problem->id);
+            $position++;
         }
 
         return response()->json([
@@ -34,8 +37,29 @@ class PaperController extends Controller
         ],201);
     }
 
-    public function getPaper(Request $request){
-        return Paper::find($request->paper_id)->problems()->get();
+
+    public function getPaper(Request $request)
+    {
+        $paper = Paper::find($request->paper_id);
+
+        if (!$paper) {
+            return response()->json([
+                'msg' => 'no such paper',
+            ]);
+        }
+
+        $problems = $paper->problems->map(function ($problem) {
+            return [
+                'status' => true,
+                'problemLink' => $problem->problemLink,
+                'answerLink' => $problem->ansLink,
+                'choices' => $problem->choices,
+            ];
+        });
+
+        return response()->json([
+            'problem' => $problems,
+        ]);
     }
 
 
@@ -51,7 +75,7 @@ class PaperController extends Controller
     }
 
     public function deletePaper(Request $request){
-        $paper = Paper::find($request->id);
+        $paper = Paper::find($request->paper_id);
         $paper->delete();
         return response()->json([
             'message' => 'Paper deleted successfully'
@@ -60,12 +84,19 @@ class PaperController extends Controller
 
     public function getAllPaper_teacher(Request $request){
         $papers = Paper::where('Class_id',$request->class_id)->get();
+        if($papers->isEmpty()){
+            return response()->json([
+                'status'=>False,
+                'msg' => 'no paper',
+            ]);
+        }
         return response()->json([
+            'status' => True,
             'papers' => $papers
         ],201);
     }
 
-    public function markAllPapers(Request $request){
+    public function markPapers(Request $request){
         $paper_id = $request->paper_id;
         $score = $request->score;
 
@@ -79,7 +110,7 @@ class PaperController extends Controller
             foreach($problemRecords as $problemRecord){
                 $problem=Paper::find($paper_id)->problems()->where('position',$position)->first();
                 if($problemRecord->answer === $problem->answer){
-                    $score += 100/count($paperRecords);
+                    $score += 100/count($problemRecords);
                 }
                 $position++;
             }
@@ -97,13 +128,13 @@ class PaperController extends Controller
 
     public function getAllPaperRecord(Request $request){
         $paper_id=$request->paper_id;
-        $student_id=$request->user()->id;
         $paperRecords=PaperRecord::where('paper_id',$paper_id)->get();
         $records = [];
 
+
         foreach ($paperRecords as $paperRecord) {
             $student_id = $paperRecord->student_id;
-            $student_name = $paperRecord->student()->name;
+            $student_name = $paperRecord->student->name;
             $problemRecords = ProblemRecord::where('paper_id', $paper_id)->where('student_id',$student_id)->get();
             $answers = [];
 
@@ -111,14 +142,12 @@ class PaperController extends Controller
                 $answers[] = $problemRecord->answer;
             }
 
-            $record = [
+            $records = [
                 'student_name' => $student_name,
                 'answer' => $answers,
                 'timestamps' => $paperRecord->markTime,
                 'score' => $paperRecord->score,
             ];
-
-            $records[] = $record;
         }
 
         $response = [
@@ -130,7 +159,7 @@ class PaperController extends Controller
     }
 
     public function getAllPaper_student(Request $request){
-        $class_id=$request->user()->Classe()->get()->first()->id;
+        $class_id=$request->user()->Classe_id;
         $student_id=$request->user()->id;
         $papers=Classe::find($class_id)->Papers()->get();
         $paperData = [];
@@ -161,7 +190,8 @@ class PaperController extends Controller
         $problemRecords = ProblemRecord::where('student_id', $student_id)
         ->where('paper_id', $paper_id)->get();
 
-        $answer = [];
+
+        $answers = [];
         foreach($problemRecords as $problemRecord){
             $answers[]= $problemRecord->answer;
         }
@@ -173,7 +203,7 @@ class PaperController extends Controller
 
         return response()->json([
             'has_record'=> $hasRecord,
-            'answer'=>$answer,
+            'answer'=>$answers,
             'timestamps'=>$paperRecord->markTime,
             'score'=>$paperRecord->score,
         ]);
@@ -191,6 +221,9 @@ class PaperController extends Controller
             $problemRecord->save();
             $position++;
         }
+        return response()->json([
+            'msg'=> "update success",
+        ]);
     }
 
     public function CreateProblemRecord(Request $request){

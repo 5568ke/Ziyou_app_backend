@@ -15,7 +15,6 @@ class Paper extends Model
         'Class_id',
         'status',
         'deadline',
-        // Add other fields if necessary
     ];
 
     public function Class(): BelongsTo {

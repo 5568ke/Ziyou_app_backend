@@ -17,6 +17,7 @@ class Problem extends Model
         'ansLink',
         'answer',
         'choices',
+        'position',
     ];
 
 
