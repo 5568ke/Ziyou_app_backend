@@ -12,16 +12,16 @@ class Problem extends Model
     use HasFactory;
 
     protected $fillable=[
-        'problem_name',
-        'problem_link',
-        'answer_link',
+        'problemNum',
+        'problemLink',
+        'ansLink',
         'answer',
         'choices',
-    ]
+        'position',
+    ];
 
-    public function Papers(): BelongsTo {
-        return $this->belongsTomany(Paper::class);
+
+    public function Papers(){
+        return $this->belongsToMany(Paper::class);
     }
-
-
 }

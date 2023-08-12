@@ -23,7 +23,7 @@ class StudentController extends Controller
                 'max:16',
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
             ],
-            'School_id' => 'required|integer|exists:schools,id', // Assuming you have a 'schools' table with an 'id' column
+            'school_id' => 'required|integer|exists:schools,id', // Assuming you have a 'schools' table with an 'id' column
             'grade' => 'required|integer|between:1,6',
         ]);
 
@@ -31,7 +31,7 @@ class StudentController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'School_id' => $request->School_id,
+            'School_id' => $request->school_id,
             'grade' => $request->grade,
             // Add other fields if necessary
         ]);
@@ -76,9 +76,6 @@ class StudentController extends Controller
 
     public function enterClass(Request $request)
     {
-        $request->validate([
-            'invite_code' => 'required|string|exists:classes,invite_code',
-        ]);
 
         $class = Classe::where('invite_code', $request->invite_code)->first();
         if(!$class == null){

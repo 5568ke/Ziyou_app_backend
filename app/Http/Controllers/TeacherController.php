@@ -6,13 +6,14 @@ use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 
 class TeacherController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:teachers,email',
             'password' => [
@@ -22,18 +23,26 @@ class TeacherController extends Controller
                 'max:16',
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
             ],
-            'School_id' => 'required|integer|exists:schools,id', // Assuming you have a 'schools' table with an 'id' column
-            // Add other validation rules for additional fields if necessary
+            'school_id' => 'required|integer|exists:schools,id',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => False,
+                'error_msg' => $validator->errors(),
+            ], 422);
+        }
 
         $teacher = Teacher::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'School_id' => $request->School_id,
-            // Add other fields if necessary
+            'School_id' => $request->school_id,
         ]);
-        return response()->json(['message' => 'Teacher registered successfully', 'teacher' => $teacher], 201);
+
+        return response()->json([
+            'status' => True,
+            'message' => 'Teacher registered successfully'], 201);
     }
 
     public function login(Request $request){
@@ -44,21 +53,21 @@ class TeacherController extends Controller
 
         $user= Teacher::where('email',$request->email)->first();
         if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+            return response()->json([
+                'status' => False,
+                'error_msg' => 'The provided credentials are incorrect.',
+            ], 401);
         }
 
         $token = $user->createToken('device-name')->plainTextToken;
 
         return response()->json([
-            'status' => true,
+            'status' => True,
             'school_name' => $user->school->name,
             'name' => $user->name,
             'role' => 'teacher',
             'token' => $token,
         ]);
-
     }
 
     public function logout(Request $request)

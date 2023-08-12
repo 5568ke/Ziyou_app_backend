@@ -21,4 +21,21 @@ class Classe extends Model
     public function Teacher(): BelongsTo {
         return $this->belongsTo(Teacher::class,'Teacher_id');
     }
+    public function Papers(){
+        return $this->hasMany(Paper::class,'Class_id');
+    }
+
+    public function generateInviteCode()
+    {
+        $code = uniqid();
+
+        while (self::where('invite_code', $code)->exists()) {
+            $code = uniqid();
+        }
+
+        $this->invite_code = $code;
+        $this->save();
+
+        return $code;
+    }
 }

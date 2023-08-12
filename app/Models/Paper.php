@@ -15,10 +15,13 @@ class Paper extends Model
         'Class_id',
         'status',
         'deadline',
-        // Add other fields if necessary
     ];
 
     public function Class(): BelongsTo {
         return $this->belongsTo(Classe::class,'Class_id');
+    }
+
+    public function problems(){
+        return $this->belongsToMany(Problem::class);
     }
 }
