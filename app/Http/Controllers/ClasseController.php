@@ -20,6 +20,7 @@ class ClasseController extends Controller
 
         return response()->json([
            'msg' => 'create class success',
+           'invite_code' => $classe->invite_code,
         ]);
     }
 

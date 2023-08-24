@@ -23,6 +23,8 @@ Route::get('unAuth',function(){
     return response()->json(['error' => 'Unauthenticated'], 401);
 })->name('unAuth');
 
+
+
 Route::post('register/teacher', [TeacherController::class, 'register']);                            //對應的 api : 老師註冊
 Route::post('login/teacher', [TeacherController::class, 'login']);                                  //對應的 api : 老師登入
 Route::post('register/student', [StudentController::class, 'register']);                            //對應的 api : 學生註冊

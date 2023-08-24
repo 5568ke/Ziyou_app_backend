@@ -24,7 +24,6 @@ class StudentController extends Controller
                 'regex:/^(?=.*[a-zA-Z])(?=.*\d).+$/',
             ],
             'school_id' => 'required|integer|exists:schools,id', // Assuming you have a 'schools' table with an 'id' column
-            'grade' => 'required|integer|between:1,6',
         ]);
 
         $student  = Student::create([
@@ -32,7 +31,6 @@ class StudentController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'School_id' => $request->school_id,
-            'grade' => $request->grade,
             // Add other fields if necessary
         ]);
         return response()->json(['message' => 'Student registered successfully', 'student' => $student], 201);
@@ -80,7 +78,8 @@ class StudentController extends Controller
         $class = Classe::where('invite_code', $request->invite_code)->first();
         if(!$class == null){
             $request->user()->Classe_id = $class->id;
-             $request->user()->save();
+            $request->user()->grade = $class->grade;
+            $request->user()->save();
             return response()->json(['message' => 'student entered class successfully']);
         }
         else{
