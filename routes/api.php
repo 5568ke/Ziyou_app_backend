@@ -33,6 +33,7 @@ Route::post('login/student', [StudentController::class, 'login']);              
 Route::group(['middleware'=>['auth:sanctum_teacher', 'refresh.token.expiration']],function(){
     Route::post('teacher/logout',[TeacherController::class,'logout']);                              //對應的 api : 老師登出
 
+    Route::post('teacher/update_login',[TeacherController::class,'update_login']);                  //對應的 api : 更新登入狀態
     Route::post('teacher/createClass',[ClasseController::class,'createClass']);                     //對應的 api : 建立班級
     Route::get('teacher/getAllClass',[ClasseController::class,'getAllClasses']);                    //對應的 api : 取得班級
     Route::delete('teacher/deleteClass',[ClasseController::class,'deleteClass']);                   //對應的 api : 刪除班級
@@ -48,6 +49,7 @@ Route::group(['middleware'=>['auth:sanctum_teacher', 'refresh.token.expiration']
 
 Route::group(['middleware'=>['auth:sanctum_student', 'refresh.token.expiration']],function(){
     Route::get('student/getAllPaper',[PaperController::class,'getAllPaper_student']);                 //對應的 api : 取得作業
+    Route::post('student/update_login',[StudentController::class,'update_login']);                    //對應的 api : 更新登入狀態
     Route::post('student/getPaperRecord',[PaperController::class,'getPaperRecord_student']);          //對應的 api : 取得作業紀錄
     Route::post('student/updatePaperRecord',[PaperController::class,'updatePaperRecord']);            //對應的 api : 更改作業紀錄
     Route::post('student/getPaper',[PaperController::class,'getPaper']);                              //對應的 api : 取得題目

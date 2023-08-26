@@ -36,6 +36,17 @@ class StudentController extends Controller
         return response()->json(['message' => 'Student registered successfully', 'student' => $student], 201);
     }
 
+
+    public function update_login(Request $request){
+        $token = $request->user->currentAccessToken();
+        $token->forceFill([
+            'expires_at' => now()->addMinutes(30),
+        ])->save();
+        return response()->json([
+            'msg'=>'update_success',
+        ]);
+    }
+
     public function login(Request $request){
          $credentials = $request->validate([
             'email' => 'required|email',

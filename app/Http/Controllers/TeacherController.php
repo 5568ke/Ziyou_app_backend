@@ -70,6 +70,16 @@ class TeacherController extends Controller
         ]);
     }
 
+    public function update_login(Request $request){
+        $token = $request->user->currentAccessToken();
+        $token->forceFill([
+            'expires_at' => now()->addMinutes(30),
+        ])->save();
+        return response()->json([
+            'msg'=>'update_success',
+        ]);
+    }
+
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
