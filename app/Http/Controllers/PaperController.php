@@ -165,8 +165,8 @@ class PaperController extends Controller
             return response()->json([
                 "status"=> False,
                 "error_msg" => "student hasn't enter a class",
-            ])
-        }
+            ]);
+        };
         $papers=Classe::find($class_id)->Papers()->where('status',1)->get();
         $paperData = [];
         foreach($papers as $paper){
