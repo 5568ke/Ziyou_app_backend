@@ -166,6 +166,7 @@ class PaperController extends Controller
         foreach($papers as $paper){
             $problemRecords = ProblemRecord::where('student_id', $student_id)
             ->where('paper_id', $paper->id)
+            ->where('status',1)
             ->get();
             $answers = [];
             foreach($problemRecords as $problemRecord){
@@ -174,10 +175,14 @@ class PaperController extends Controller
             $paperData[] = [
                 'paper_id' => $paper->id,
                 'title' => $paper->name,
+                'deadline' => $paper->deadline,
                 'answer'=> $answers,
             ];
         }
-        return $paperData;
+        return response()->json([
+            "status" => true,
+            "paper" => $paperData
+        ]);
     }
 
     public function getPaperRecord_student(Request $request){
