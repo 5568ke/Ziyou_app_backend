@@ -19,6 +19,12 @@ use GuzzleHttp\Middleware;
 |
 */
 
+Route::get('test',function(){
+    return response()->json([
+        'msg'=>'test',
+    ]);
+});
+
 Route::get('unAuth',function(){
     return response()->json(['error' => 'Unauthenticated'], 401);
 })->name('unAuth');
