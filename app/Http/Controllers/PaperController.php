@@ -161,6 +161,12 @@ class PaperController extends Controller
     public function getAllPaper_student(Request $request){
         $class_id=$request->user()->Classe_id;
         $student_id=$request->user()->id;
+        if($class_id===null){
+            return response()->json([
+                "status"=> False,
+                "error_msg" => "student hasn't enter a class",
+            ])
+        }
         $papers=Classe::find($class_id)->Papers()->where('status',1)->get();
         $paperData = [];
         foreach($papers as $paper){
