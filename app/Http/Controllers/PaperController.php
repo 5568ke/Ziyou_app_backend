@@ -161,12 +161,11 @@ class PaperController extends Controller
     public function getAllPaper_student(Request $request){
         $class_id=$request->user()->Classe_id;
         $student_id=$request->user()->id;
-        $papers=Classe::find($class_id)->Papers()->get();
+        $papers=Classe::find($class_id)->Papers()->where('status',1)->get();
         $paperData = [];
         foreach($papers as $paper){
             $problemRecords = ProblemRecord::where('student_id', $student_id)
             ->where('paper_id', $paper->id)
-            ->where('status',1)
             ->get();
             $answers = [];
             foreach($problemRecords as $problemRecord){
