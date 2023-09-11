@@ -63,5 +63,6 @@ Route::group(['middleware'=>['auth:sanctum_student', 'refresh.token.expiration']
     Route::post('student/logout',[StudentController::class,'logout']);                                //對應的 api : 學生登出
     Route::post('student/enterClass',[StudentController::class,'enterclass']);                        //對應的 api : 加入班級
     Route::post('student/createProblemRecord',[PaperController::class,'createProblemRecord']);        //對應的 api : 建立作業紀錄
+    Route::post('student/getPaper',[PaperController::class,'getPaper']);                            //對應的 api : 取得題目
 });
 

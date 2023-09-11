@@ -44,7 +44,7 @@ class PaperController extends Controller
 
         if (!$paper) {
             return response()->json([
-                'msg' => 'no such paper',
+                'msg' => 'no such paper!',
             ]);
         }
 
@@ -179,7 +179,7 @@ class PaperController extends Controller
             }
             $paperData[] = [
                 'paper_id' => $paper->id,
-                'title' => $paper->name,
+                'name' => $paper->name,
                 'deadline' => $paper->deadline,
                 'answer'=> $answers,
             ];
