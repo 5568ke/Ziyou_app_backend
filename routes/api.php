@@ -51,6 +51,7 @@ Route::group(['middleware'=>['auth:sanctum_teacher', 'refresh.token.expiration']
     Route::delete('teacher/deletePaper',[PaperController::class,'deletePaper']);                    //對應的 api : 刪除試卷
     Route::post('teacher/getAllPaperRecord',[PaperController::class,'getAllPaperRecord']);          //對應的 api : 取得所有作業紀錄
     Route::post('teacher/markPapers',[PaperController::class,'markPapers']);                        //對應的 api : 批改試卷並發布試卷成績
+    Route::post('teacher/makeGameRoom',[GameController::class,'makeGameRoom']);
 });
 
 Route::group(['middleware'=>['auth:sanctum_student', 'refresh.token.expiration']],function(){
